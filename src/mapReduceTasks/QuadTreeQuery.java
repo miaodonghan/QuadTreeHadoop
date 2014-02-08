@@ -147,7 +147,9 @@ public class QuadTreeQuery {
 		conf.setOutputKeyClass(IntWritable.class);
 		conf.setOutputValueClass(Text.class);
 
-		conf.setNumReduceTasks(1);
+		conf.setNumReduceTasks(conf.getNumReduceTasks());
+		System.out.println("Number of Working Machines: "+conf.getNumReduceTasks());
+		
 		FileInputFormat.setInputPaths(conf, new Path("out"));
 		FileOutputFormat.setOutputPath(conf, new Path("result"));
 		FileInputFormat.setInputPathFilter(conf, RegexFilter.class);

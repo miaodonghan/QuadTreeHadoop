@@ -100,7 +100,7 @@ public class QuadTreeIndexer {
 		conf.setOutputValueClass(QuadTree.class);
 
 		conf.setNumReduceTasks(conf.getNumReduceTasks());
-
+		System.out.println("Number of Working Machines: "+conf.getNumReduceTasks());
 		FileInputFormat.setInputPaths(conf, new Path("src"));
 		FileOutputFormat.setOutputPath(conf, new Path("out"));
 
