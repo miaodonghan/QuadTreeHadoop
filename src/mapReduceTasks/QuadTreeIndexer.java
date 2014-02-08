@@ -32,8 +32,13 @@ import quadIndex.SpatialObj;
 class Map extends MapReduceBase implements
 		Mapper<LongWritable, Text, IntWritable, Text> {
 
-	static final int NUM_OF_NODES = 1;
+	private int NUM_OF_NODES = 1;
 
+	@Override
+	public void configure(JobConf conf){
+		NUM_OF_NODES = conf.getNumReduceTasks();
+	}
+	
 	@Override
 	public void map(LongWritable key, Text value, // input key, value
 			OutputCollector<IntWritable, Text> output, Reporter reporter)
@@ -94,7 +99,7 @@ public class QuadTreeIndexer {
 		conf.setOutputKeyClass(IntWritable.class);
 		conf.setOutputValueClass(QuadTree.class);
 
-		conf.setNumReduceTasks(1);
+		conf.setNumReduceTasks(conf.getNumReduceTasks());
 
 		FileInputFormat.setInputPaths(conf, new Path("src"));
 		FileOutputFormat.setOutputPath(conf, new Path("out"));
@@ -103,6 +108,7 @@ public class QuadTreeIndexer {
 		conf.setOutputFormat(io.QuadTreeFileOutputFormat.class);
 
 		client.setConf(conf);
+		
 		try {
 			JobClient.runJob(conf);
 		} catch (Exception e) {
