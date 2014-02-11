@@ -52,7 +52,12 @@ class Map extends MapReduceBase implements
 
 class Reduce extends MapReduceBase implements
 		Reducer<IntWritable, Text, IntWritable, QuadTree> {
-
+	private JobConf myJobConf ;
+	@Override
+	public void	configure(JobConf job) {
+		myJobConf = job;
+	}
+	
 	@Override
 	public void reduce(IntWritable key, Iterator<Text> values,
 			OutputCollector<IntWritable, QuadTree> output, Reporter reporter)
@@ -63,7 +68,7 @@ class Reduce extends MapReduceBase implements
 		FileSystem dfs = FileSystem.get(config);
 		//dfs.mkdirs(new Path(dfs.getWorkingDirectory()+ "/raw"));
 		FSDataOutputStream out = dfs.create(new Path(dfs.getWorkingDirectory()
-				+ "/out/" + key.toString()+".rawdata"));
+				+"/" + myJobConf.get("outPath") +"/" + key.toString()+".rawdata"));
 		
 		long offset = 0L;
 		QuadTree quad = new QuadTree();
@@ -85,6 +90,16 @@ class Reduce extends MapReduceBase implements
 public class QuadTreeIndexer {
 
 	public static void main(String[] args) {
+		String src = null;
+		String out = null;
+		if(args.length <2){
+			src = "src/";
+			out = "out/";
+		} else {
+			src = args[0];
+			out = args[1];
+		}
+				
 		JobClient client = new JobClient();
 		JobConf conf = new JobConf(QuadTreeIndexer.class);
 
@@ -101,9 +116,10 @@ public class QuadTreeIndexer {
 
 		conf.setNumReduceTasks(conf.getNumReduceTasks());
 		System.out.println("Number of Working Machines: "+conf.getNumReduceTasks());
-		FileInputFormat.setInputPaths(conf, new Path("src"));
-		FileOutputFormat.setOutputPath(conf, new Path("out"));
+		FileInputFormat.setInputPaths(conf, new Path(src));
+		FileOutputFormat.setOutputPath(conf, new Path(out));
 
+		conf.set("outPath", out);
 		//conf.setInputFormat(io.ObjectPositionInputFormat.class);
 		conf.setOutputFormat(io.QuadTreeFileOutputFormat.class);
 

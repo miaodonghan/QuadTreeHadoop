@@ -25,6 +25,7 @@ import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapred.job_005fauthorization_005ferror_jsp;
 
 import quadIndex.FileLoc;
 import quadIndex.InputParser;
@@ -41,6 +42,12 @@ import quadIndex.SpatialObj;
 class QueryMap extends MapReduceBase implements
 		Mapper<IntWritable, QuadTree, IntWritable, Text> {
 
+	private JobConf myJobConf;
+	@Override
+	public void configure(JobConf job) {
+		myJobConf = job;
+	}
+	
 	@Override
 	public void map(IntWritable key, QuadTree value, // input key, value
 			OutputCollector<IntWritable, Text> output, Reporter reporter)
@@ -52,11 +59,11 @@ class QueryMap extends MapReduceBase implements
 		FileSystem dfs = FileSystem.get(config);
 		
 		FSDataInputStream in = dfs.open(new Path(dfs.getWorkingDirectory()
-				+ "/query/query.txt"));
+				+ "/"+ myJobConf.get("query")));
 		BufferedReader din = new BufferedReader(new InputStreamReader(in));
 
 		FSDataInputStream RawReader = dfs.open(new Path(dfs.getWorkingDirectory()+ 
-				"/out/" + key.toString() + ".rawdata"));
+				"/"+myJobConf.get("out") +"/"+ key.toString() + ".rawdata"));
 		
 		
 		String line = din.readLine();
@@ -133,9 +140,25 @@ class RegexFilter extends Configured implements PathFilter {
 public class QuadTreeQuery {
 
 	public static void main(String[] args) {
+		String out = null;
+		String query = null;
+		String result = null;
+		if(args.length < 3){
+			out = "out/";
+			result = "result/";
+			query = "query/query.txt";
+		} else {
+			out = args[0];
+			query = args[1];
+			result = args[2];
+		}
+		
 		JobClient client = new JobClient();
 		JobConf conf = new JobConf(QuadTreeQuery.class);
 
+		conf.set("out", out);
+		conf.set("query", query);
+		
 		// TODO: specify a mapper and a reducer
 		conf.setMapperClass(QueryMap.class);
 		conf.setReducerClass(QueryReduce.class);
@@ -150,8 +173,8 @@ public class QuadTreeQuery {
 		conf.setNumReduceTasks(conf.getNumReduceTasks());
 		System.out.println("Number of Working Machines: "+conf.getNumReduceTasks());
 		
-		FileInputFormat.setInputPaths(conf, new Path("out"));
-		FileOutputFormat.setOutputPath(conf, new Path("result"));
+		FileInputFormat.setInputPaths(conf, new Path(out));
+		FileOutputFormat.setOutputPath(conf, new Path(result));
 		FileInputFormat.setInputPathFilter(conf, RegexFilter.class);
 
 		conf.setInputFormat(io.QuadTreeInputFormat.class);
