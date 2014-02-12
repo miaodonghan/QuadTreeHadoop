@@ -93,8 +93,8 @@ public class QuadTreeIndexer {
 		String src = null;
 		String out = null;
 		if(args.length <2){
-			src = "src/";
-			out = "out/";
+			src = "src";
+			out = "out";
 		} else {
 			src = args[0];
 			out = args[1];

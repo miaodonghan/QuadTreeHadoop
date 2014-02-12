@@ -118,13 +118,21 @@ class RegexFilter extends Configured implements PathFilter {
 	// only files generated from last reducer should be processed.
 	String regFilter = ".*part.*";
     Pattern pattern = Pattern.compile(regFilter);
-
-	
+    boolean firstcall = true;
+    Configuration myConf;
+    public RegexFilter(Configuration conf) {
+    	myConf = conf;
+    }
+    
     @Override
     public boolean accept(Path path) {
     
     	// being the directory, not the file.
-    	if(path.toString().endsWith("out")){
+    	//if(path.toString().endsWith(myConf.get("out"))){
+    	//	return true;
+    	//}
+    	if (firstcall){
+    		firstcall = false;
     		return true;
     	}
     	
@@ -144,8 +152,8 @@ public class QuadTreeQuery {
 		String query = null;
 		String result = null;
 		if(args.length < 3){
-			out = "out/";
-			result = "result/";
+			out = "out";
+			result = "result";
 			query = "query/query.txt";
 		} else {
 			out = args[0];
