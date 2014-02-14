@@ -53,10 +53,10 @@ class QueryMap extends MapReduceBase implements
 			OutputCollector<IntWritable, Text> output, Reporter reporter)
 			throws IOException {
 
-		Configuration config = new Configuration();
-		config.set("fs.default.name", "hdfs://127.0.0.1:9000/");
+		//Configuration config = new Configuration();
+		//config.set("fs.default.name", "hdfs://127.0.0.1:9000/");
 
-		FileSystem dfs = FileSystem.get(config);
+		FileSystem dfs = FileSystem.get(myJobConf);
 		
 		FSDataInputStream in = dfs.open(new Path(dfs.getWorkingDirectory()
 				+ "/"+ myJobConf.get("query")));

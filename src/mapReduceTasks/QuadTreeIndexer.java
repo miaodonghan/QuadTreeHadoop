@@ -62,10 +62,10 @@ class Reduce extends MapReduceBase implements
 	public void reduce(IntWritable key, Iterator<Text> values,
 			OutputCollector<IntWritable, QuadTree> output, Reporter reporter)
 			throws IOException {
-		Configuration config = new Configuration();
-		config.set("fs.default.name", "hdfs://127.0.0.1:9000/");
+		//Configuration config = new Configuration();
+		//config.set("fs.default.name", "hdfs://127.0.0.1:9000/");
 
-		FileSystem dfs = FileSystem.get(config);
+		FileSystem dfs = FileSystem.get(myJobConf);
 		//dfs.mkdirs(new Path(dfs.getWorkingDirectory()+ "/raw"));
 		FSDataOutputStream out = dfs.create(new Path(dfs.getWorkingDirectory()
 				+"/" + myJobConf.get("outPath") +"/" + key.toString()+".rawdata"));
