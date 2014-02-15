@@ -24,7 +24,7 @@ public class QuadTree implements Writable {
 	 * @deprecated
 	 */
 
-	public void insert(SpatialObj obj, long offset) {
+	public void insert(SpatialObj obj, int offset) {
 		root.insert(obj,offset);
 	}
 
@@ -160,7 +160,7 @@ class QuadInternalNode extends QuadNode {
 		children = new QuadNode[4];
 	}
 
-	public void insert(SpatialObj _obj, long offset) {
+	public void insert(SpatialObj _obj, int offset) {
 		for (int i = 0; i < 4; i++) {
 			if (!_obj.intersects(children[i].bound))
 				continue;
@@ -388,9 +388,9 @@ class QuadLeafNode extends QuadNode {
 	public void readFields(DataInput in) throws IOException {
 		num_of_obj = in.readInt();
 		for (int i = 0; i < num_of_obj; i++) {
-			long os = in.readLong();
+			int pos = in.readInt();
 			int len = in.readInt();
-			locList.add(new FileLoc(os,len));
+			locList.add(new FileLoc(pos,len));
 		}
 	}
 
@@ -398,7 +398,7 @@ class QuadLeafNode extends QuadNode {
 	public void write(DataOutput out) throws IOException {
 		out.writeInt(num_of_obj);
 		for (int i = 0; i < num_of_obj; i++) {
-			out.writeLong(locList.get(i).offset);
+			out.writeInt(locList.get(i).offset);
 			out.writeInt(locList.get(i).length);
 		}
 	}

@@ -6,6 +6,8 @@ package io;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import mapReduceTasks.QuadTreeWritable;
+
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -16,11 +18,9 @@ import org.apache.hadoop.mapred.RecordWriter;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.Progressable;
 
-import quadIndex.QuadTree;
+public class QuadTreeFileOutputFormat extends FileOutputFormat<IntWritable, QuadTreeWritable> {
 
-public class QuadTreeFileOutputFormat extends FileOutputFormat<IntWritable,QuadTree> {
-
-	protected static class QuadTreeWriter implements RecordWriter<IntWritable, QuadTree> {
+	protected static class QuadTreeWriter implements RecordWriter<IntWritable, QuadTreeWritable> {
 		//private static final String utf8 = "UTF-8";
 
 		private DataOutputStream out;
@@ -37,7 +37,7 @@ public class QuadTreeFileOutputFormat extends FileOutputFormat<IntWritable,QuadT
 		 * @throws IOException
 		 *             if the write throws, we pass it on
 		 */
-		private void writeObject(QuadTree value) throws IOException {
+		private void writeObject(QuadTreeWritable value) throws IOException {
 			value.write(out);
 		}
 
@@ -45,7 +45,7 @@ public class QuadTreeFileOutputFormat extends FileOutputFormat<IntWritable,QuadT
 			key.write(out);
 		}
 
-		public synchronized void write(IntWritable key, QuadTree value) throws IOException {
+		public synchronized void write(IntWritable key, QuadTreeWritable value) throws IOException {
 
 			boolean nullKey = key == null;
 			boolean nullValue = value == null;
@@ -71,7 +71,7 @@ public class QuadTreeFileOutputFormat extends FileOutputFormat<IntWritable,QuadT
 
 	}
 
-	public RecordWriter<IntWritable, QuadTree> getRecordWriter(FileSystem ignored, JobConf job,
+	public RecordWriter<IntWritable, QuadTreeWritable> getRecordWriter(FileSystem ignored, JobConf job,
 			String name, Progressable progress) throws IOException {
 		Path file = FileOutputFormat.getTaskOutputPath(job, name);
 		FileSystem fs = file.getFileSystem(job);

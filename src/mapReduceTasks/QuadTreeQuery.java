@@ -40,7 +40,7 @@ import quadIndex.SpatialObj;
  * */
 
 class QueryMap extends MapReduceBase implements
-		Mapper<IntWritable, QuadTree, IntWritable, Text> {
+		Mapper<IntWritable, QuadTreeWritable, IntWritable, Text> {
 
 	private JobConf myJobConf;
 	@Override
@@ -49,7 +49,7 @@ class QueryMap extends MapReduceBase implements
 	}
 	
 	@Override
-	public void map(IntWritable key, QuadTree value, // input key, value
+	public void map(IntWritable key, QuadTreeWritable value, // input key, value
 			OutputCollector<IntWritable, Text> output, Reporter reporter)
 			throws IOException {
 
@@ -78,17 +78,10 @@ class QueryMap extends MapReduceBase implements
 			
 			Rectangle range = new Rectangle(rect[0], rect[1], rect[2], rect[3]);
 			
-			Set<FileLoc> result = value.cur_RangeQuery(range);
+			Set<Text> result = value.cur_RangeQuery(range);
 			
-			for (FileLoc obj : result) {
-				long pos = obj.getOffset();
-				int len = obj.getLength();
-				byte stream[] = new byte[len];
-				RawReader.read(pos, stream, 0, len);
-				SpatialObj sObj = InputParser.getObjFromBytes(stream);
-				if(sObj.intersects(range)){
-					output.collect(new IntWritable(queryId), new Text(sObj.toString()));
-				}
+			for (Text obj : result) {
+				output.collect(new IntWritable(queryId), obj);
 			}
 			line = din.readLine();
 		}

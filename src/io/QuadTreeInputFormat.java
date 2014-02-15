@@ -6,6 +6,8 @@ package io;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import mapReduceTasks.QuadTreeWritable;
+
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -16,11 +18,10 @@ import org.apache.hadoop.mapred.InputSplit;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapred.Reporter;
-import quadIndex.QuadTree;
 
-public class QuadTreeInputFormat extends FileInputFormat<IntWritable,QuadTree> {
+public class QuadTreeInputFormat extends FileInputFormat<IntWritable,QuadTreeWritable> {
 
-	public RecordReader<IntWritable,QuadTree> getRecordReader(InputSplit input,
+	public RecordReader<IntWritable,QuadTreeWritable> getRecordReader(InputSplit input,
 			JobConf job, Reporter reporter) throws IOException {
 
 		reporter.setStatus(input.toString());
@@ -33,7 +34,7 @@ public class QuadTreeInputFormat extends FileInputFormat<IntWritable,QuadTree> {
 	}
 }
 
-class QuadTreeRecordReader implements RecordReader<IntWritable,QuadTree> {
+class QuadTreeRecordReader implements RecordReader<IntWritable,QuadTreeWritable> {
 
 	boolean read = false;
 	DataInputStream in;
@@ -47,7 +48,7 @@ class QuadTreeRecordReader implements RecordReader<IntWritable,QuadTree> {
 	    in = filein;
 	}
 
-	public boolean next(IntWritable key, QuadTree qt) throws IOException {
+	public boolean next(IntWritable key, QuadTreeWritable qt) throws IOException {
 		if(!read){
 			read = true;		
 			key.readFields(in);
@@ -61,8 +62,8 @@ class QuadTreeRecordReader implements RecordReader<IntWritable,QuadTree> {
 		return new IntWritable();
 	}
 
-	public QuadTree createValue() {
-		return new QuadTree();
+	public QuadTreeWritable createValue() {
+		return new QuadTreeWritable();
 	}
 
 	public long getPos() throws IOException {

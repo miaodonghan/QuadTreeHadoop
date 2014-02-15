@@ -21,7 +21,7 @@ public class FileLoc implements Writable {
 		return length;
 	}
 
-	public FileLoc(long off, int len) {
+	public FileLoc(int off, int len) {
 		offset = off;
 		length = len;
 	}
@@ -30,18 +30,18 @@ public class FileLoc implements Writable {
 		offset = -1;
 	}
 
-	long offset;
+	int offset;
 	int length;
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
-		offset = in.readLong();
+		offset = in.readInt();
 		length = in.readInt();
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
-		out.writeLong(offset);
+		out.writeInt(offset);
 		out.writeInt(length);
 	}
 

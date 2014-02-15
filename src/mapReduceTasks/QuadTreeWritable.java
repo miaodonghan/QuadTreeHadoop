@@ -5,9 +5,17 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
+import quadIndex.FileLoc;
+import quadIndex.InputParser;
 import quadIndex.QuadTree;
+import quadIndex.Rectangle;
 import quadIndex.SpatialObj;
 
 
@@ -17,7 +25,7 @@ public class QuadTreeWritable implements Writable{
 	private byte[] raw = null;
 	private ByteArrayOutputStream bos = new ByteArrayOutputStream();
 	private DataOutputStream rawdata = new DataOutputStream(bos);
-	private long offset = 0L;
+	private int offset = 0;
 	
 	final static int maxBlockSize = 63*1024*1024;
 	
@@ -30,6 +38,28 @@ public class QuadTreeWritable implements Writable{
 		return isAlmostFull();
 	}
 	
+	public boolean isEmpty(){
+		return quadtree.Count()==0;
+	}
+	
+	public Set<Text> cur_RangeQuery(Rectangle rect) {
+
+		Set<Text> found_items = new HashSet<Text>();
+		Set<FileLoc> result = quadtree.cur_RangeQuery(rect);
+		for(FileLoc obj : result){
+			long pos = obj.getOffset();
+			int len = obj.getLength();
+			byte stream[] = new byte[len];
+
+			System.arraycopy(raw, (int) pos, stream, 0, len);
+			SpatialObj sObj = InputParser.getObjFromBytes(stream);
+			if(sObj.intersects(rect)){
+				found_items.add(new Text(sObj.toString()));
+			}
+		}
+		return found_items;
+	}
+
 	private int size(){
 		return quadtree.size() + rawdata.size()*8;
 	}
