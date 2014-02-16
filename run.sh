@@ -7,9 +7,9 @@
 #!/bin/bash
 hadoop namenode -format
 start-all.sh
-hadoop dfs -mkdir src/
+hadoop dfs -mkdir src
 hadoop dfs -put Lakes.txt src/Lakes.txt
-hadoop dfs -mkdir query/
+hadoop dfs -mkdir query
 hadoop dfs -put query.txt query/Lakes.txt
 
 

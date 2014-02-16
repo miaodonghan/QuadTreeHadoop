@@ -160,7 +160,7 @@ public class QuadTreeQuery {
 		
 		FileInputFormat.setInputPaths(conf, new Path(out));
 		FileOutputFormat.setOutputPath(conf, new Path(result));
-		FileInputFormat.setInputPathFilter(conf, RegexFilter.class);
+		//FileInputFormat.setInputPathFilter(conf, RegexFilter.class);
 
 		conf.setInputFormat(io.QuadTreeInputFormat.class);
 		// conf.setOutputFormat(io.QuadTreeFileOutputFormat.class);
