@@ -4,11 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -25,13 +24,7 @@ import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
-import org.apache.hadoop.mapred.job_005fauthorization_005ferror_jsp;
-
-import quadIndex.FileLoc;
-import quadIndex.InputParser;
-import quadIndex.QuadTree;
 import quadIndex.Rectangle;
-import quadIndex.SpatialObj;
 
 /*
  * This MapReduce Job is to query spatial Objects
@@ -62,8 +55,8 @@ class QueryMap extends MapReduceBase implements
 				+ "/"+ myJobConf.get("query")));
 		BufferedReader din = new BufferedReader(new InputStreamReader(in));
 
-		FSDataInputStream RawReader = dfs.open(new Path(dfs.getWorkingDirectory()+ 
-				"/"+myJobConf.get("out") +"/"+ key.toString() + ".rawdata"));
+	//	FSDataInputStream RawReader = dfs.open(new Path(dfs.getWorkingDirectory()+ 
+	//			"/"+myJobConf.get("out") +"/"+ key.toString() + ".rawdata"));
 		
 		
 		String line = din.readLine();
@@ -78,7 +71,7 @@ class QueryMap extends MapReduceBase implements
 			
 			Rectangle range = new Rectangle(rect[0], rect[1], rect[2], rect[3]);
 			
-			Set<Text> result = value.cur_RangeQuery(range);
+			List<Text> result = value.cur_RangeQuery(range);
 			
 			for (Text obj : result) {
 				output.collect(new IntWritable(queryId), obj);
@@ -112,18 +105,9 @@ class RegexFilter extends Configured implements PathFilter {
 	String regFilter = ".*part.*";
     Pattern pattern = Pattern.compile(regFilter);
     boolean firstcall = true;
-    Configuration myConf;
-    public RegexFilter(Configuration conf) {
-    	myConf = conf;
-    }
-    
+
     @Override
     public boolean accept(Path path) {
-    
-    	// being the directory, not the file.
-    	//if(path.toString().endsWith(myConf.get("out"))){
-    	//	return true;
-    	//}
     	if (firstcall){
     		firstcall = false;
     		return true;

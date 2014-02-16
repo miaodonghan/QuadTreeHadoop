@@ -120,7 +120,7 @@ public class QuadTreeIndexer {
 		FileInputFormat.setInputPaths(conf, new Path(src));
 		FileOutputFormat.setOutputPath(conf, new Path(out));
 
-		conf.set("outPath", out);
+		//conf.set("outPath", out);
 		//conf.setInputFormat(io.ObjectPositionInputFormat.class);
 		conf.setOutputFormat(io.QuadTreeFileOutputFormat.class);
 

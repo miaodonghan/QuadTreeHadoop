@@ -5,12 +5,11 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
+
 
 import quadIndex.FileLoc;
 import quadIndex.InputParser;
@@ -42,9 +41,9 @@ public class QuadTreeWritable implements Writable{
 		return quadtree.Count()==0;
 	}
 	
-	public Set<Text> cur_RangeQuery(Rectangle rect) {
+	public List<Text> cur_RangeQuery(Rectangle rect) {
 
-		Set<Text> found_items = new HashSet<Text>();
+		List<Text> found_items = new ArrayList<Text>();
 		Set<FileLoc> result = quadtree.cur_RangeQuery(rect);
 		for(FileLoc obj : result){
 			long pos = obj.getOffset();
