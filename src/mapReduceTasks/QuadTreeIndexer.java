@@ -16,6 +16,8 @@ import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapred.TaskAttemptID;
+
 import quadIndex.InputParser;
 import quadIndex.SpatialObj;
 
@@ -29,10 +31,17 @@ class Map extends MapReduceBase implements
 		Mapper<LongWritable, Text, IntWritable, Text> {
 
 	private int NUM_OF_NODES = 1;
-
+	private JobConf myJobConf ;
+	private int _attemptID=9;
+	
+	
 	@Override
 	public void configure(JobConf conf){
 		NUM_OF_NODES = conf.getNumReduceTasks();
+		myJobConf = conf;
+		TaskAttemptID attempt = TaskAttemptID.forName(myJobConf.get("mapred.task.id"));
+		_attemptID = attempt.getTaskID().getId();
+		System.out.println("AttemptID =" + _attemptID);
 	}
 	
 	@Override
@@ -40,33 +49,25 @@ class Map extends MapReduceBase implements
 			OutputCollector<IntWritable, Text> output, Reporter reporter)
 			throws IOException {
 
-		output.collect(
-				new IntWritable((int) (key.get() % (long) NUM_OF_NODES)), value);
+		output.collect(new IntWritable(_attemptID), value);
 	}
 
 }
 
 class Reduce extends MapReduceBase implements
 		Reducer<IntWritable, Text, IntWritable, QuadTreeWritable> {
-	/*private JobConf myJobConf ;
+	private JobConf myJobConf ;
+
 	@Override
 	public void	configure(JobConf job) {
 		myJobConf = job;
-	}*/
+	}
 	
 	@Override
 	public void reduce(IntWritable key, Iterator<Text> values,
 			OutputCollector<IntWritable, QuadTreeWritable> output, Reporter reporter)
 			throws IOException {
-		//Configuration config = new Configuration();
-		//config.set("fs.default.name", "hdfs://127.0.0.1:9000/");
 
-		//FileSystem dfs = FileSystem.get(myJobConf);
-		//dfs.mkdirs(new Path(dfs.getWorkingDirectory()+ "/raw"));
-		//FSDataOutputStream out = dfs.create(new Path(dfs.getWorkingDirectory()
-		//		+"/" + myJobConf.get("outPath") +"/" + key.toString()+".rawdata"));
-		
-		//long offset = 0L;
 		int num = 0;
 		QuadTreeWritable quad = new QuadTreeWritable();
 
@@ -76,14 +77,13 @@ class Reduce extends MapReduceBase implements
 			if(!quad.insert(obj)){
 				continue;
 			} else {
-				output.collect(new IntWritable(key.get()*1000+(num++)), quad);
+				output.collect(new IntWritable((key.get()%100)*1000+(num++)), quad);
 				quad = new QuadTreeWritable();
 				continue;
 			}
 		}
 		if(!quad.isEmpty())
-			output.collect(new IntWritable(key.get()*1000+(num++)), quad);
-		//out.close();
+			output.collect(new IntWritable((key.get()%100)*1000+(num++)), quad);
 	}
 
 }

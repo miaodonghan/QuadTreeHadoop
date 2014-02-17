@@ -89,7 +89,7 @@ class QueryReduce extends MapReduceBase implements
 
 		StringBuilder T = new StringBuilder();
 		while (values.hasNext()) {
-			T.append(" " + values.next().toString());
+			T.append(values.next().toString()+"\n");
 		}
 
 		output.collect(key, new Text(T.toString()));

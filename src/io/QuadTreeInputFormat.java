@@ -9,6 +9,7 @@ import java.io.IOException;
 import mapReduceTasks.QuadTreeWritable;
 
 import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -38,24 +39,25 @@ class QuadTreeRecordReader implements RecordReader<IntWritable,QuadTreeWritable>
 
 	boolean read = false;
 	DataInputStream in;
-	
+	FSDataInputStream filein;
+	long size;
 	public QuadTreeRecordReader(JobConf job, FileSplit split)
 			throws IOException {
 	    
 	    Path path = split.getPath();
 	    FileSystem fs	= path.getFileSystem(job);
-	    FSDataInputStream filein = fs.open(path);
+	    FileStatus fileStatus = fs.getFileStatus(path);
+	    size = fileStatus.getLen();
+	    filein = fs.open(path);
 	    in = filein;
 	}
 
 	public boolean next(IntWritable key, QuadTreeWritable qt) throws IOException {
-		if(!read){
-			read = true;		
-			key.readFields(in);
-			qt.readFields(in);
-			return true;
-		}
-		return false;
+		if(filein.getPos()==size)
+			return false;
+		key.readFields(in);
+		qt.readFields(in);
+		return true;
 	}
 
 	public IntWritable createKey() {
@@ -67,7 +69,7 @@ class QuadTreeRecordReader implements RecordReader<IntWritable,QuadTreeWritable>
 	}
 
 	public long getPos() throws IOException {
-		return 1;
+		return filein.getPos();
 	}
 
 	public void close() throws IOException {
