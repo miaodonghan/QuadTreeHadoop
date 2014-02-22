@@ -1,5 +1,7 @@
 package mapReduceTasks;
 
+import io.InputParser;
+
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -18,7 +20,6 @@ import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapred.TaskAttemptID;
 
-import quadIndex.InputParser;
 import quadIndex.SpatialObj;
 
 /*
