@@ -31,14 +31,14 @@ import quadIndex.SpatialObj;
 class Map extends MapReduceBase implements
 		Mapper<LongWritable, Text, IntWritable, Text> {
 
-	private int NUM_OF_NODES = 1;
+	//private int NUM_OF_NODES = 1;
 	private JobConf myJobConf ;
 	private int _attemptID=9;
 	
 	
 	@Override
 	public void configure(JobConf conf){
-		NUM_OF_NODES = conf.getNumReduceTasks();
+		//NUM_OF_NODES = conf.getNumReduceTasks();
 		myJobConf = conf;
 		TaskAttemptID attempt = TaskAttemptID.forName(myJobConf.get("mapred.task.id"));
 		_attemptID = attempt.getTaskID().getId();
@@ -57,11 +57,11 @@ class Map extends MapReduceBase implements
 
 class Reduce extends MapReduceBase implements
 		Reducer<IntWritable, Text, IntWritable, QuadTreeWritable> {
-	private JobConf myJobConf ;
+	//private JobConf myJobConf ;
 
 	@Override
 	public void	configure(JobConf job) {
-		myJobConf = job;
+	//	myJobConf = job;
 	}
 	
 	@Override
