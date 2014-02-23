@@ -15,12 +15,12 @@ public class InputParser {
 
 		int pos1 = line.indexOf('(');
 		int pos2 = line.indexOf(')');
-		line = line.substring(pos1 + 1, pos2 - pos1 - 1);
-		line.replace(',' , ' '  );
-		String delims = "[ ]+";
-		String[] strings = line.split(delims);
+		String data = line.substring(pos1 + 1, pos2);
+		//line.replace(',' , ' ');
+		String delims = "[,| ]+";
+		String[] strings = data.split(delims);
 		java.util.List<Float> nums = new java.util.ArrayList<Float>();
-		for (int i = 1; i < strings.length; i++)
+		for (int i = 0; i < strings.length; i++)
 			nums.add(Float.parseFloat(strings[i]));
 
 		int npoints = strings.length / 2;
@@ -41,13 +41,7 @@ public class InputParser {
 			xs[i] = nums.get(2 * i);
 			ys[i] = nums.get(2 * i + 1);
 		}
-		SpatialObj object = new Polygon(xs, ys, npoints);
-
-		/*
-		 * } else { System.err.println("No such object"); return null; }
-		 */
-
-		return object;
+		return new Polygon(xs, ys, npoints);
 	}
 
 	public static SpatialObj getObjFromBytes(byte[] bytes) {

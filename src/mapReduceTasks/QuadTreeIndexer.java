@@ -75,6 +75,9 @@ class Reduce extends MapReduceBase implements
 		while (values.hasNext()) {
 			String line = values.next().toString();
 			SpatialObj obj = InputParser.getObjFromLine(line);
+			if ( obj == null){
+				continue;
+			}
 			if(!quad.insert(obj)){
 				continue;
 			} else {

@@ -5,14 +5,13 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.*;
 
+import io.InputParser;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
-
+import java.util.*;
 
 import quadIndex.FileLoc;
-import quadIndex.InputParser;
 import quadIndex.QuadTree;
 import quadIndex.Rectangle;
 import quadIndex.SpatialObj;
