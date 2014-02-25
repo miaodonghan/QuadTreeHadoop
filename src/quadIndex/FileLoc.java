@@ -13,6 +13,10 @@ import org.apache.hadoop.io.Writable;
  * Author: Donghan Miao
  * */
 public class FileLoc implements Writable {
+
+	int offset;
+	int length;
+	
 	public long getOffset() {
 		return offset;
 	}
@@ -30,8 +34,6 @@ public class FileLoc implements Writable {
 		offset = -1;
 	}
 
-	int offset;
-	int length;
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
@@ -73,5 +75,9 @@ public class FileLoc implements Writable {
 				// if deriving: appendSuper(super.equals(obj)).
 				append(offset, rhs.offset).append(length, rhs.length)
 				.isEquals();
+	}
+	
+	public static int size(){
+		return 4*2;
 	}
 }

@@ -10,7 +10,7 @@ import org.apache.hadoop.io.Writable;
 
 public class Point extends SpatialObj implements Writable{
 
-	public Point(float x0, float y0){
+	public Point(double x0, double y0){
 		x = x0;
 		y = y0;
 	}
@@ -20,7 +20,7 @@ public class Point extends SpatialObj implements Writable{
 		return POINT;
 	}
 	
-	private boolean intersects(float x0, float y0, float width, float height) {
+	private boolean intersects(double x0, double y0, double width, double height) {
 		if( (x>=x0 && x<=x0+width) &&(y>=y0 && y<=y0+height) )
 			return true;
 		return false;
@@ -31,9 +31,9 @@ public class Point extends SpatialObj implements Writable{
 		return intersects(rect.x, rect.y, rect.width, rect.height);
 	}
 	/*
-	private boolean intersects(float x0, float y0, float radius) {
-		float w = x - x0;
-		float h = y - y0;
+	private boolean intersects(double x0, double y0, double radius) {
+		double w = x - x0;
+		double h = y - y0;
 		if(w*w + h*h < radius * radius)
 			return true;
 		return false;
@@ -64,14 +64,14 @@ public class Point extends SpatialObj implements Writable{
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
-		x = in.readFloat();
-		y = in.readFloat();
+		x = in.readDouble();
+		y = in.readDouble();
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
-		out.writeFloat(x);
-		out.writeFloat(y);
+		out.writeDouble(x);
+		out.writeDouble(y);
 	}
 
 	@Override
@@ -86,15 +86,15 @@ public class Point extends SpatialObj implements Writable{
 
 	@Override
 	public int size() {
-		return 4*2;
+		return 8*2;
 	}
 	
 	@Override
 	public Rectangle getMBR() {
-		return new Rectangle(x,y,0f,0f);
+		return new Rectangle(x,y,0.0,0.0);
 	}
 
-	private float x;
-	private float y;
+	private double x;
+	private double y;
 
 }

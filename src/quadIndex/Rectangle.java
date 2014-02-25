@@ -13,15 +13,15 @@ import org.apache.hadoop.io.Writable;
  */
 public class Rectangle extends SpatialObj implements Writable {
 
-	public float getWidth(){
+	public double getWidth(){
 		return width;
 	}
 	
-	public Rectangle(float _x, float _y, float w, float h) {
-		x = _x;
-		y = _y;
-		width = w;
-		height = h;
+	public Rectangle(double x2, double y2, double d, double e) {
+		x = x2;
+		y = y2;
+		width = d;
+		height = e;
 	}
 
 	public boolean isEmpty() {
@@ -44,7 +44,7 @@ public class Rectangle extends SpatialObj implements Writable {
 	}
 
 	// check if two lines are overlaped
-	private boolean isOverlap(float x1, float x2, float _x1, float _x2) {
+	private boolean isOverlap(double x1, double x2, double _x1, double _x2) {
 		if (x2 < _x1 || x1 > _x2) {
 			return false;
 		}
@@ -62,18 +62,18 @@ public class Rectangle extends SpatialObj implements Writable {
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
-		x = in.readFloat();
-		y = in.readFloat();
-		width = in.readFloat();
-		height = in.readFloat();
+		x = in.readDouble();
+		y = in.readDouble();
+		width = in.readDouble();
+		height = in.readDouble();
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
-		out.writeFloat(x);
-		out.writeFloat(y);
-		out.writeFloat(width);
-		out.writeFloat(height);
+		out.writeDouble(x);
+		out.writeDouble(y);
+		out.writeDouble(width);
+		out.writeDouble(height);
 	}
 
 	@Override
@@ -82,14 +82,14 @@ public class Rectangle extends SpatialObj implements Writable {
 	}
 	
 /*
-	private boolean intersects(float x0,float y0,float w,float h) {
+	private boolean intersects(double x0,double y0,double w,double h) {
 		if (!(x > x0 + w || x + width < x0) && !(y > y0 + h || y + height < y0))
 			return true;
 		return false;
 	}
 
 	@Override
-	public boolean intersects(float x0, float y0, float radius) {
+	public boolean intersects(double x0, double y0, double radius) {
 		if (Math.abs(x - x0) < radius || Math.abs(x + width - x0) < radius
 				|| Math.abs(y - y0) < radius
 				|| Math.abs(y + height - y0) < radius)
@@ -129,7 +129,7 @@ public class Rectangle extends SpatialObj implements Writable {
 
 	@Override
 	public int size() {
-		return 4*4;
+		return 4*8;
 	}
 	
 	@Override
@@ -142,9 +142,9 @@ public class Rectangle extends SpatialObj implements Writable {
 		return "[RECT] " + x + " " + y + " " + width + " " + height;
 	}
 
-	public float x;
-	public float y;
-	public float width;
-	public float height;
+	public double x;
+	public double y;
+	public double width;
+	public double height;
 
 }

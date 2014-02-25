@@ -15,18 +15,18 @@ public class Polygon extends SpatialObj implements Writable {
 	private static final int initialSize = 8;
 
 	public Polygon() {
-		xs = new float[initialSize];
-		ys = new float[initialSize];
+		xs = new double[initialSize];
+		ys = new double[initialSize];
 		npoints = 0;
 	}
 
-	public Polygon(float[] x, float[] y, int n) {
+	public Polygon(double[] x, double[] y, int n) {
 		xs = x;
 		ys = y;
 		npoints = n;
 	}
 
-	private float[] copyArray(float[] small, float[] large) {
+	private double[] copyArray(double[] small, double[] large) {
 		for (int i = 0; i < small.length; i++) {
 			large[i] = small[i];
 		}
@@ -40,10 +40,10 @@ public class Polygon extends SpatialObj implements Writable {
 		System.out.println();
 	}
 
-	public void addPoint(float x, float y) {
+	public void addPoint(double x, double y) {
 		if (npoints == xs.length) {
-			float[] new_xs = new float[xs.length * 2];
-			float[] new_ys = new float[ys.length * 2];
+			double[] new_xs = new double[xs.length * 2];
+			double[] new_ys = new double[ys.length * 2];
 			xs = copyArray(xs, new_xs);
 			ys = copyArray(ys, new_ys);
 		}
@@ -65,16 +65,16 @@ public class Polygon extends SpatialObj implements Writable {
 	}
 
 	/*
-	 * @Override public boolean intersects(float x, float y, float width, float
+	 * @Override public boolean intersects(double x, double y, double width, double
 	 * height) { // TODO Auto-generated method stub return false; }
 	 * 
-	 * @Override public boolean intersects(float x, float y, float radius) { //
+	 * @Override public boolean intersects(double x, double y, double radius) { //
 	 * TODO Auto-generated method stub return false; }
 	 */
 
 	public Rectangle getMBR() {
-		float low = Float.POSITIVE_INFINITY;
-		float up = Float.NEGATIVE_INFINITY;
+		double low = Double.POSITIVE_INFINITY;
+		double up = Double.NEGATIVE_INFINITY;
 
 		for (int i = 0; i < xs.length; i++) {
 			if (xs[i] < low) {
@@ -84,11 +84,11 @@ public class Polygon extends SpatialObj implements Writable {
 				up = xs[i];
 			}
 		}
-		float lowerbound_x = low;
-		float upperbound_x = up;
+		double lowerbound_x = low;
+		double upperbound_x = up;
 
-		low = Float.POSITIVE_INFINITY;
-		up = Float.NEGATIVE_INFINITY;
+		low = Double.POSITIVE_INFINITY;
+		up = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < ys.length; i++) {
 			if (ys[i] < low) {
 				low = ys[i];
@@ -97,10 +97,10 @@ public class Polygon extends SpatialObj implements Writable {
 				up = ys[i];
 			}
 		}
-		float lowerbound_y = low;
-		float upperbound_y = up;
-		float width = upperbound_x - lowerbound_x;
-		float height = upperbound_y - lowerbound_y;
+		double lowerbound_y = low;
+		double upperbound_y = up;
+		double width = upperbound_x - lowerbound_x;
+		double height = upperbound_y - lowerbound_y;
 
 		return new Rectangle(lowerbound_x, lowerbound_y, width, height);
 	}
@@ -108,21 +108,21 @@ public class Polygon extends SpatialObj implements Writable {
 	@Override
 	public void readFields(DataInput in) throws IOException {
 		npoints = in.readInt();
-		xs = new float[npoints];
-		ys = new float[npoints];
+		xs = new double[npoints];
+		ys = new double[npoints];
 		for (int i = 0; i < npoints; i++)
-			xs[i] = in.readFloat();
+			xs[i] = in.readDouble();
 		for (int i = 0; i < npoints; i++)
-			ys[i] = in.readFloat();
+			ys[i] = in.readDouble();
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
 		out.writeInt(npoints);
 		for (int i = 0; i < npoints; i++)
-			out.writeFloat(xs[i]);
+			out.writeDouble(xs[i]);
 		for (int i = 0; i < npoints; i++)
-			out.writeFloat(ys[i]);
+			out.writeDouble(ys[i]);
 	}
 
 	@Override
@@ -173,12 +173,12 @@ public class Polygon extends SpatialObj implements Writable {
 	
 	@Override
 	public int size() {
-		return 4 + npoints * 4 * 2;
+		return 4 + npoints * 8 * 2;
 	}
 
 	public int npoints;
-	private float[] xs;
-	private float[] ys;
+	private double[] xs;
+	private double[] ys;
 
 	
 

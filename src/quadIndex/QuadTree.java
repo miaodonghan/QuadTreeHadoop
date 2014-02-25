@@ -106,8 +106,8 @@ class QuadInternalNode extends QuadNode {
 		bound = ln.bound;
 		Rectangle rect = ln.bound;
 		children = new QuadNode[4];
-		float mid_x = rect.x + rect.width / 2;
-		float mid_y = rect.y + rect.height / 2;
+		double mid_x = rect.x + rect.width / 2;
+		double mid_y = rect.y + rect.height / 2;
 		children[0] = new QuadLeafNode(rect.x, rect.y, mid_x - rect.x, mid_y
 				- rect.y, null);
 		children[1] = new QuadLeafNode(mid_x + 1, rect.y, rect.x + rect.width
@@ -136,8 +136,8 @@ class QuadInternalNode extends QuadNode {
 	// The boundary range is automatically computed by its parent.
 	public QuadInternalNode(Rectangle pRect, int section) {
 		Rectangle rect = null;
-		float mid_x = pRect.x + pRect.width / 2;
-		float mid_y = pRect.y + pRect.height / 2;
+		double mid_x = pRect.x + pRect.width / 2;
+		double mid_y = pRect.y + pRect.height / 2;
 		switch (section) {
 		case 0:
 			rect = new Rectangle(pRect.x, pRect.y, mid_x - pRect.x, mid_y
@@ -276,7 +276,7 @@ class QuadInternalNode extends QuadNode {
 }
 
 class QuadLeafNode extends QuadNode {
-	public QuadLeafNode(float x, float y, float width, float height,
+	public QuadLeafNode(double x, double y, double width, double height,
 			SpatialObj o) {
 		bound = new Rectangle(x, y, width, height);
 		objList = new ArrayList<SpatialObj>();
@@ -296,8 +296,8 @@ class QuadLeafNode extends QuadNode {
 
 	public QuadLeafNode(Rectangle pRect, int section) {
 		Rectangle m_bound = null;
-		float mid_x = pRect.x + pRect.width / 2;
-		float mid_y = pRect.y + pRect.height / 2;
+		double mid_x = pRect.x + pRect.width / 2;
+		double mid_y = pRect.y + pRect.height / 2;
 		switch (section) {
 		case 0:
 			m_bound = new Rectangle(pRect.x, pRect.y, mid_x - pRect.x, mid_y
@@ -381,7 +381,7 @@ class QuadLeafNode extends QuadNode {
 
 	@Override
 	public int size() {
-		return 8 + 4;
+		return num_of_obj * FileLoc.size();
 	}
 
 	@Override
